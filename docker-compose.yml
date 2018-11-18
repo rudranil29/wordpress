@@ -1,0 +1,42 @@
+
+version: '3'
+
+services:
+
+  nginx:
+    #build: ./docker-utils/nginx/
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - phpfpm:phpfpm
+    volumes:
+      - ./docker-utils/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker-utils/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker-utils/logs/nginx:/var/log/nginx
+      - ./web/:/var/www/html
+    command: bash -c 'useradd -u 1000 local; nginx -g "daemon off;" && service nginx start && nginx -s reload'
+
+
+  phpfpm:
+    build: ./docker-utils/php/
+    links:
+      - db:db
+    depends_on:
+      - db
+    volumes:
+      - ./docker-utils/php/phpfpm.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./docker-utils/logs/php:/var/log/php
+      - ./web/:/var/www/html
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./docker-utils/databases:/var/lib/mysql
+      - ./docker-utils/sqldump:/app/sqldump
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ybl
+      MYSQL_USER: ybl
+      MYSQL_PASSWORD: ybl
