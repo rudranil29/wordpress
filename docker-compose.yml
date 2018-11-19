@@ -7,7 +7,7 @@ services:
     #build: ./docker-utils/nginx/
     image: nginx:latest
     ports:
-      - "80:80"
+      - "8081:80"
       - "443:443"
     links:
       - phpfpm:phpfpm
@@ -37,6 +37,6 @@ services:
       - ./docker-utils/sqldump:/app/sqldump
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: ybl
-      MYSQL_USER: ybl
-      MYSQL_PASSWORD: ybl
+      MYSQL_DATABASE: simpleinformation
+      MYSQL_USER: diy
+      MYSQL_PASSWORD: diy
